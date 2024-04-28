@@ -120,4 +120,4 @@ def classify(msg):
         print('Equal probabilities, have a human classify this!')
 
 # Call the classify function with a sample msg to classify it as spam or ham
-classify('Sounds good, Tom, then see u there')
+classify('probability and statisitcs course is a good course that helps...')
