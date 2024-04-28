@@ -73,20 +73,22 @@ n_vocab = len(vocab)
 # Laplace smoothing parameter
 alpha = 1
 
-# Initialize dictionaries to store parameters
-parameters_spam = {unique_word: 0 for unique_word in vocab}
-parameters_ham = {unique_word: 0 for unique_word in vocab}
+# Initialize dictionaries to store parameters 
+parameters_spam = {unique_word: 0 for unique_word in vocab} # stores the values of probability of words given they are spam
+parameters_ham = {unique_word: 0 for unique_word in vocab} # # stores the values of probability of words given they are ham
 
 # Calculate parameters for each word in the vocab
 for word in vocab[:5000]:  # Consider only the first 5000 words for efficiency
     # Calculate P(word|Spam) using Laplace smoothing
     n_word_given_spam = spam_msgs[word].sum()
-    p_word_given_spam = (n_word_given_spam + alpha) / (n_spam + alpha * n_vocab)
+    ####### formula for calculating probability of a word given it's spam is:
+    p_word_given_spam = n_word_given_spam  / (n_spam + n_vocab) 
     parameters_spam[word] = p_word_given_spam
     
     # Calculate P(word|Ham) using Laplace smoothing
     n_word_given_ham = ham_msgs[word].sum()
-    p_word_given_ham = (n_word_given_ham + alpha) / (n_ham + alpha * n_vocab)
+    ####### formula for calculating probability of a word given it's ham is:
+    p_word_given_ham = n_word_given_ham / (n_ham + n_vocab)
     parameters_ham[word] = p_word_given_ham
 
 # Define a function to classify msgs as spam or ham
@@ -101,10 +103,10 @@ def classify(msg):
     # Update probabilities based on the presence of each word in the msg
     for word in msg:
         if word in parameters_spam and parameters_spam[word] != 0:
-            p_spam_given_msg *= parameters_spam[word]
+            p_spam_given_msg *= parameters_spam[word] # Calculates P(Spam|w1, w2, ..., wn)
             
         if word in parameters_ham and parameters_ham[word] != 0:
-            p_ham_given_msg *= parameters_ham[word]
+            p_ham_given_msg *= parameters_ham[word] # Calculates P(Ham|w1, w2, ..., wn)
             
     # Print probabilities and classify msg as spam or ham
     print('P(Spam|msg):', p_spam_given_msg)
